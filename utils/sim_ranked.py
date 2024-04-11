@@ -28,7 +28,7 @@ def get_player_str() -> int:
     mean = _global.player_str_mean
     sigma = _global.player_str_sigma
 
-    num = random.gauss(mean, sigma)
+    num = abs(random.gauss(mean, sigma))
     return num
 
 
@@ -44,12 +44,12 @@ def battle_two(sim_player1: SimulatedPlayer, sim_player2: SimulatedPlayer) -> di
 
 
 def new_elo(player_obj: SimulatedPlayer, past_elo, won_or_lost, expected_outcome):
-    if past_elo < _global.MAX_CHANGE_IN_ELO_UNDER_1000:
-        max_change = _global.MAX_CHANGE_IN_ELO_UNDER_1000
-    elif past_elo < _global.MAX_CHANGE_IN_ELO_UNDER_1500:
-        max_change = _global.MAX_CHANGE_IN_ELO_UNDER_1500
+    for key, value in _global.MAX_CHANGES.items():
+        if past_elo < value[0]:
+            max_change = value[1]
+            break
     else:
-        max_change = _global.MAX_CHANGE_IN_ELO_OVER_1500
+        max_change = _global.MAX_CHANGES_DEFAULT
     player_new_ELO = past_elo + max_change * (1 - expected_outcome)
     if player_new_ELO <= _global.MIN_ELO:
         player_new_ELO = _global.MIN_ELO
