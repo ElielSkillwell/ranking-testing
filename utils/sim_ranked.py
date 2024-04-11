@@ -1,10 +1,12 @@
 import random
+import numpy as np
 
 import utils._global as _global
 
+
 class SimulatedPlayer:
     def __init__(self, model, index) -> None:
-        self.player_strength = random.random()
+        self.player_strength = get_player_str()
         self.model_name = model
         self.ELO = 400
         self.index = index
@@ -20,7 +22,14 @@ class SimulatedPlayer:
     
     def get_name(self):
         return self.model_name
-    
+
+
+def get_player_str() -> int:
+    mean = _global.player_str_mean
+    sigma = _global.player_str_sigma
+
+    num = random.gauss(mean, sigma)
+    return num
 
 
 def battle_two(sim_player1: SimulatedPlayer, sim_player2: SimulatedPlayer) -> dict[SimulatedPlayer]:
@@ -32,6 +41,7 @@ def battle_two(sim_player1: SimulatedPlayer, sim_player2: SimulatedPlayer) -> di
         return sim_player1
     else:
         return sim_player2
+
 
 def new_elo(player_obj: SimulatedPlayer, past_elo, won_or_lost, expected_outcome):
     if past_elo < _global.MAX_CHANGE_IN_ELO_UNDER_1000:
@@ -45,6 +55,7 @@ def new_elo(player_obj: SimulatedPlayer, past_elo, won_or_lost, expected_outcome
         player_new_ELO = _global.MIN_ELO
     player_obj.set_ELO(int(player_new_ELO))
 
+
 def calc_elo(player_won: SimulatedPlayer, player_lost: SimulatedPlayer):
     won_elo = player_won.get_ELO()
     lost_elo = player_lost.get_ELO()
@@ -53,6 +64,7 @@ def calc_elo(player_won: SimulatedPlayer, player_lost: SimulatedPlayer):
 
     new_elo(player_obj=player_won, past_elo=won_elo, won_or_lost=1, expected_outcome=expected_outcome_won)
     new_elo(player_obj=player_lost, past_elo=lost_elo, won_or_lost=0, expected_outcome=expected_outcome_lost)
+
 
 
 def sim_battle(sim_player1: SimulatedPlayer, sim_player2: SimulatedPlayer, logs=False):
