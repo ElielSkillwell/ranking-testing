@@ -43,7 +43,7 @@ def new_elo(player_obj: SimulatedPlayer, past_elo, won_or_lost, expected_outcome
     player_new_ELO = past_elo + max_change * (1 - expected_outcome)
     if player_new_ELO <= _global.MIN_ELO:
         player_new_ELO = _global.MIN_ELO
-    player_obj.set_ELO(player_new_ELO)
+    player_obj.set_ELO(int(player_new_ELO))
 
 def calc_elo(player_won: SimulatedPlayer, player_lost: SimulatedPlayer):
     won_elo = player_won.get_ELO()
