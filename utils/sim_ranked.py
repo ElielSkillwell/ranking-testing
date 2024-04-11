@@ -3,10 +3,11 @@ import random
 import utils._global as _global
 
 class SimulatedPlayer:
-    def __init__(self, model) -> None:
+    def __init__(self, model, index) -> None:
         self.player_strength = random.random()
         self.model_name = model
         self.ELO = 400
+        self.index = index
 
     def get_battle_vars(self):
         return self.player_strength
@@ -33,7 +34,13 @@ def battle_two(sim_player1: SimulatedPlayer, sim_player2: SimulatedPlayer) -> di
         return sim_player2
 
 def new_elo(player_obj: SimulatedPlayer, past_elo, won_or_lost, expected_outcome):
-    player_new_ELO = past_elo + _global.MAX_CHANGE_IN_ELO * (1 - expected_outcome)
+    if past_elo < _global.MAX_CHANGE_IN_ELO_UNDER_1000:
+        max_change = _global.MAX_CHANGE_IN_ELO_UNDER_1000
+    elif past_elo < _global.MAX_CHANGE_IN_ELO_UNDER_1500:
+        max_change = _global.MAX_CHANGE_IN_ELO_UNDER_1500
+    else:
+        max_change = _global.MAX_CHANGE_IN_ELO_OVER_1500
+    player_new_ELO = past_elo + max_change * (1 - expected_outcome)
     if player_new_ELO <= _global.MIN_ELO:
         player_new_ELO = _global.MIN_ELO
     player_obj.set_ELO(player_new_ELO)
